@@ -1,0 +1,15 @@
+Program usermgmt.py služi za upravljanje lozinkama i korisničkim imenima i namijenjen je administratorima. Alat omogućava dodavanje novog korisnika (add), promjenu lozinke postojećem korisniku (passwd), zahtijevanje promjene lozinke postojećeg korisnika (forcepass) i brisanje korisnika (del). 
+
+Pri dodavanju korisnika i mijenjanju lozinke, administrator upisuje lozinku koju želi spremiti za tog korisnika. Prije spremanja u tekstualnu datoteku "mgmt.txt", generira se nasumični salt koji se koristi u funkciji za derivaciju ključa "scrypt" skupa s lozinkom. U datoteku se sprema korisničko ime, generirani scrypt ključ, salt i još jedan krajnji byte koji označava zastavicu za administratorov zahtjev za promjenu lozinke (forcepass).
+
+Pri pozivanju funkcionalnosti 'forcepass', ako korisnik postoji, iz tekstualne datoteke se čita zapis uz njegovo korisničko ime i zadnji byte se postavlja na '1'. Ispisuje se poruka o uspješnosti poziva.
+
+Pri pozivanju funkcionalnosti 'del', ako korisnik postoji, brišu se njegovi podatci iz tekstualne datoteke i ispisuje se poruka o uspješnosti poziva.
+
+
+Program login.py služi za upisivanje korisničkog imena i lozinke. Ako je upisano korisničko ime koje ne postoji ili je kriva lozinka, program vraća poruku "Username or password incorrect." Ako je sve u redu, program vraća poruku o uspješnom loginu. Iz tekstualne datoteke se dohvaća zapis spremljen kraj odgovarajućeg korisničkog imena i čita se zadnji byte koji predsavlja zastavicu za administratorov zahtjev za promjenu lozinke. Ako je taj byte 0, ne događa se ništa, a ako je 1, korisnik mora promijeniti lozinku. Nakon unosa nove lozinke i ponovnog unosa, generira se nasumični salt i scrypt ključ te se u teksutalnu datoteku sprema korisničko ime + generirani scrypt ključ + salt + zastavica za forcepass.
+
+
+Pri dodavanju i mijenjanju lozinki, zaštita je implementirana korištenjem 'scrypt' funkcije za derivaciju ključa koja koristi salt koji svaki put nasumično generiramo. Tako smo zaštitili podatke od napada rječnikom i napada grubom silom. Programi zahtijevaju da lozinka bude minimalno 8 znakova što također pomaže u zaštiti od pogađanja lozinke. Prilikom upisa na ekranu, lozinka nije vidljiva. Nakon svakog neuspjelog pokušaja upisivanja lozinke, povećava se vrijeme čekanja što smanjuje broj pokušaja u jedinici vremena pa tako i vjerojatnost pogađanja.
+
+Ono što je spomenuto na predavanjima, a nije implementirano je zahtijevanje da se lozinka sastoji od različitih vrsta znakova i da ne smije biti kombinacija riječi iz rječnika. Nije implementirano ni blokiranje korisnika i slanje upozorenja adminu ako je upisana kriva lozinka više puta, kao ni periodički zahtjev za promjenu lozinke. Razlog za izostavljanje ovih vrsta zaštite je što su neke od njih komplicirane za implementaciju (kombinacija riječi iz rječnika), a neke su se činile suvišne za ovaj labos zato što su se funkcionalni i sigurnosni zahtjevi mogli ispuniti i bez njih.

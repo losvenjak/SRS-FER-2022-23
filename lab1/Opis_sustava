@@ -1,0 +1,20 @@
+Koristili smo simetričnu kriptografiju AES u modu GCM za šifriranje podataka koji se pohranjuju u binarnu datoteku. 
+Kako bismo zaštitili integritet i autentičnost podataka, koristili smo HMAC sa SHA256 za generiranje i provjeru 
+MAC-a. 
+
+Prije svake enkripcije, provjeravamo je li unesena točna lozinka i je li netko mijenjao naše podatke u datoteci. 
+To radimo tako da podatak iz datoteke zajedno s lozinkom koristimo za izradu novog HMACA te ga uspoređujemo s 
+HMAC-om koji je zapisan na kraju datoteke. Onda generiramo nasumični IV i salt. Salt se koristi kod deriviranja 
+ključa iz lozinke kako bi se spriječio napad rječnikom, a ključ i IV se koriste prilikom kriptiranja. Na kraju 
+dodajemo i oznaku (tag) tako da šifrat ima oblik: IV + podatak + salt + tag. Takav podatak zapisujemo u binarnu 
+datoteku, a na kraj još dodajemo HMAC.
+
+Prije svake dekripcije, analogno provjeravamo integritet i autentičnost pomoću HMAC-a. Iz datoteke možemo iščitati 
+salt koji nam treba za generiranje ključa (zajedno s lozinkom) i IV koji ćemo koristiti za kriptiranje. Tijekom 
+dekriptiranja radimo i verifikaciju podatka usporedbom oznake (tag) s onom koju smo dobili prilikom enkriptiranja 
+(a sada smo je pročitali iz datoteke).
+
+Uneseni podatak (adresa, zaporka) se sprema u obliku rječnika (dictionary). Prije enkripcije, rječnik pretvaramo 
+u niz bajtova koristeći modul 'pickle' iz Pythonove standardne biblioteke. Za AES kriptiranje, deriviranje ključa
+i HMAC-a, koristili smo 'pycryptodome' biblioteku.
+

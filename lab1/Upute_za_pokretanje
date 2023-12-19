@@ -1,0 +1,22 @@
+Na početku, korisnik u komandnu liniju upisuje:
+
+python3 tajnik.py init {glavnaLozinka}
+
+gdje umjesto {glavnaLozinka} unosi željenu lozinku. Ta naredba stvara binarnu datoteku 'encrypted_data.bin'.
+
+
+
+Za unošenje podataka {adresa} {lozinka} korisnik u komandnu liniju upisuje:
+
+python3 tajnik.py put {glavnaLozinka} {adresa} {lozinka}
+
+
+
+Za dohvaćanje pripadajuće lozinke za neku adresu, korisnik u komandnu liniju upisuje:
+
+python3 tajnik.py get {glavnaLozinka} {adresa}
+
+
+
+Ako se u komandnu liniju upisuju neki od znakova ASCII koda 33-126 koji nisu slova niti brojevi, moguće je da će biti potrebno prije takvog znaka dodati backslash '\'.
+

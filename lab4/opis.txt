@@ -1,0 +1,55 @@
+1. nakon naredbe telnet 198.51.100.10 iz konzole client, u Wiresharku vidimo sljedeće: pojavljuje se ARP protokol kojim client želi saznati MAC adresu routera FW. Uspostavlja se TCP veza između računala client i poslužitelja www. Nakon toga se razmjenjuju podatci protokolom TELNET, a između se pojavljuje protokol TCP s [ACK] zastavicom. Na kraju dolazi do završetka TCP veze uz poruke sa zastavicama [FIN, ACK] i [ACK].
+
+Za naredbu ssh 198.51.100.10 se događa slično:
+imamo uspostavu TCP veze između računala client i poslužitelja www. Nakon toga se razmjenjuju podatci protokolom SSHv2, a između svake poruke je protokol TCP. Na kraju www prekida vezu uz TCP zastavice [FIN, ACK], a client potvrđuje uz TCP zastavicu [ACK].
+
+2. pokrenuli smo DNS poslužitelj na čvoru www te WEB poslužitelj na čvorovima www, server i database.
+
+3. nadopunili smo shell skriptu FW.sh naredbama koje odgovaraju zadanoj konfiguraciji vatrozida. Kopirali smo je na čvor FW i izveli. 
+Provjeravamo dostupnost web poslužitelja na računalu www s računala client i s računala PC te dobivamo:
+
+<HTML>
+<H1>Test file - www.example.edu</H1>
+<p>This is a starting page of Web server for SRS lab. (web server www)
+<p>Just a few lines of text...
+<p>bla bla bla
+<br>Horizontal line
+<hr>
+</HML>
+
+Provjeravamo dostupnost DNS poslužitelja na čvoru www s čvora client i dobivamo:
+
+www.example.edu has address 198.51.100.10
+
+
+Skeniranje dostupnih servisa proveli smo i alatom nmap. U Wiresharku vidimo promet koji nmap generira. Koristeći naredbu 
+
+$ sudo himage client nmap -n -Pn "-p20-25,53,80,443" 198.51.100.10
+
+provjeravamo dostupnost TCP usluga u demilitariziranoj	zoni (www) računalima iz Interneta (client). Vidimo da vrata 53 i 80 imaju stanje 'open', tj. promet do njih neće biti zaustavljen vatrozidom. To je u redu zato što je zadano da se web poslužtelju (TCP 80) i DNS poslužitelju (TCP 53) na čvoru www može pristupiti s bilo koje adrese iz Interneta.
+
+Provjeravamo dostupnost usluga u demilitariziranoj zoni	računalima iz privatne mreže (čvor PC):
+
+$ sudo himage PC nmap -n -Pn "-p20-25,53,80,443" 198.51.100.10
+
+Sada vidimo da vrata 22, 53 i 80 protokola TCP imaju stanje 'open'. Računalu PC su dostupne SSH, TCP i DNS usluge računala www. 
+
+Isprobali smo i TCP syn scan alatom nmap gdje smo provjerili koji su portovi otvoreni računalu www (iz DMZ mreže) za ciljno računalo database (iz LAN mreže). Dobili smo da je otvoren samo port 10000, što je u skladu sa zadatkom.
+
+Ako iz database konzole damo naredbu nmap -sV 10.0.0.20, alat će započeti detekciju verzije servisa. Dobili smo odgovor: 
+
+Nmap scan report for 10.0.0.20
+Host is up(0.000012s latency).
+Not shown: 997 closed ports
+PORT	STATE SERVICE VERSION
+21/TCP 	open  ftp     OpenBSD ftpd 6.4 (Linux port 0.17)
+22/tcp  open  ssh     OpenSSH 7.4p1 Debian 10+deb9u7 (protocol 2.0)
+23/tcp  open  telnet  Linux telnetd
+MAC Address: 42:00:AA:00:00:03 (Unknown)
+Service Info: Host: PC; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Rezultati pružaju informacije o otvorenim servisima na ciljnom sustavu, njihovim verzijama i drugim povezanim podacima, što može biti korisno za analizu sigurnosti i identifikaciju ranjivosti sustava.
+
+Iz client konzole smo provjerili općeniti scan nad poslužiteljem server koristeći naredbu nmap -A 203.0.113.10. U rezultatu vidimo da su otvoreni tcp portovi 21 (ftp), 22 (ssh), 23 (telnet) i 80 (http). Za svaki od njih vidimo i verziju servisa. Vidimo i MAC adresu servera. Koristi se tehnika TCP/IP fingerprint za detekciju operacijskog sustava i iz toga dobivamo sljedeće:
+
+Service Info: Host: server.example.com; OS: Linux; CPE: cpe:/o:linux:linux_kernel

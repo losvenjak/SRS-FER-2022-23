@@ -1,0 +1,42 @@
+Program usermgmt.py pokreće admin tako da u komandnu liniju upisuje:
+
+python3 usermgmt.py {ključnaRiječ} {korisnik}
+
+gdje umjesto {ključnaRiječ} upisuje jednu od ključnih riječi: add, passwd, forcepass, del,
+a umjesto {korisnik} upisuje korisničko ime.
+
+
+Admin dodaje novo korisničko ime na sljedeći način:
+
+python3 usermgmt.py add {korisnik}
+
+Ako korisničko ime nije već prije dodano, adminu se na ekranu pojavljuje polje "Password: " gdje unosi željenu lozinku za tog korisnika. Onda se pojavljuje "Repeat password: " i ako je lozinka ispravno unesena, dodaje se korisnik.
+
+
+Admin mijenja lozinku postojećeg korisničkog imena:
+
+python3 usermgmt.py passwd {korisnik}
+
+Ako postoji korisničko ime, adminu se na ekranu pojavljuje polje "Password: " gjde unosi novu željenu lozinku za tog korisnika. Onda se pojavljuje "Repeat password: " i ako je lozinka ispravno unesena, mijenja se lozinka za tog korisnika.
+
+
+Admin zahtijeva da korisnik prilikom sljedeće prijave promijeni lozinku:
+
+python3 usermgmt.py forcepass {korisnik}
+
+Ako postoji korisnik, prilikom sljedeće prijave će morati promijeniti lozinku.
+
+
+Admin briše korisničko ime:
+
+python3 usermgmt.py del {korisnik}
+
+Ako postoji korisnik, bit će obrisan.
+
+
+
+Program login.py pokreće korisnik tako da u komandnu liniju upisuje:
+
+python3 login.py {korisnik}
+
+gdje umjesto {korisnik} upisuje svoje korisničko ime. Na ekranu se pojavljuje polje "Password: " gdje korisnik mora unijeti svoju lozinku. Ako postoji korisničko ime s tom lozinkom, ispisuje se poruka o uspješnom loginu. Ako ne postoji to korisničko ime ili je unesena kriva lozinka, ispisuje se poruka o grešci. Ako admin zahtijeva promjenu lozinke za tog korisnika, pojavljuje se polje "New password: " gdje korisnik mora upisati novu lozinku. Onda se pojavljuje "Repeat new password: " i ako je lozinka ispravno unesena, prikazuje se poruka o uspješnom loginu. Svaki put kada korisnik pogriješi lozinku, mora čekati na ponovni pokušaj (3 sekunde * broj puta koji je pogriješio).
